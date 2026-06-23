@@ -1,87 +1,162 @@
-# WITH-U 🤖🧸
 
-> 她把男朋友写成了代码，装进了一个玩偶里。
-> She turned her boyfriend into code, and put him in a doll.
+<p align="center">
+  <img src="386f0e17-a757-40c0-8236-fc20f3f3096d.png" alt="WITH-U" width="320"/>
+</p>
 
-**WITH-U** 是一个实体 AI 语音交互玩偶项目。基于 ESP32-S3 构建硬件本体，由大模型驱动思考和对话，专门为一个人定制。
+<h1 align="center">WITH-U 🤖🧸</h1>
 
-## 架构
+<p align="center">
+  <em>她把男朋友写成了代码，装进了一个玩偶里。</em>
+</p>
 
-```
-┌─────────────────────┐
-│    ESP32-S3 玩偶     │
-│  ┌───────────────┐   │     HTTP / WebSocket
-│  │ INMP441 麦克风 │──┼──────────────────┐
-│  │ MAX98357 扬声器│──┼──────────────────┤
-│  │ 0.96" OLED    │   │                  │
-│  │ SHT3X 温湿度  │   │                  │
-│  │ TF 卡存储     │   │                  ▼
-│  └───────────────┘   │          ┌────────────────┐
-│  ┌───────────────┐   │          │  FastAPI 后端   │
-│  │ WiFi + OTA    │   │          │                │
-│  │ 管理面板(HTML) │   │          │  STT → LLM →  │
-│  └───────────────┘   │          │      TTS       │
-└─────────────────────┘          │                │
-                                 │  阿里云语音    │
-                                 │  DeepSeek      │
-                                 │  CosyVoice TTS │
-                                 └────────────────┘
-```
+<p align="center">
+  <a href="https://github.com/huayu0824/WITH-U/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"></a>
+  <a href="#"><img src="https://img.shields.io/badge/ESP32-S3-red" alt="ESP32-S3"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Python-3.10%2B-blue" alt="Python"></a>
+  <a href="#"><img src="https://img.shields.io/badge/PlatformIO-ready-orange" alt="PlatformIO"></a>
+  <a href="#"><img src="https://img.shields.io/badge/3D_Printed-Shell-green" alt="3D Printed"></a>
+</p>
 
-### 硬件清单
+---
 
-| 组件 | 型号 |
+**WITH-U** 是一个实体 AI 语音交互玩偶项目。基于 ESP32-S3 构建硬件本体，端到端跑通语音识别→大模型推理→超拟声合成，装进 3D 打印外壳里，让她变成一个可以抱在怀里说话的存在。
+
+## ✨ 功能一览
+
+| 功能 | 说明 |
 |------|------|
-| 主控 | ESP32-S3 (16MB Flash + 8MB PSRAM) |
-| 麦克风 | INMP441 (I2S MEMS) |
-| 功放 | MAX98357A (I2S 3W) |
-| 扬声器 | 3W 4Ω |
-| 显示屏 | 0.96" OLED (SSD1306) |
-| 温湿度 | SHT3X |
-| 存储 | TF 卡 (SPI 模式) |
-| 电源 | 3.7V 锂电 + USB-C 充电 |
+| 🎤 **语音对话** | 按住说话，松开自动回复。端到端延迟约 2~4 秒 |
+| 🗣️ **超拟声 TTS** | CosyVoice 复刻声音，不是机器人腔 |
+| 🖥️ **OLED 显示** | 实时反馈对话状态：听、想、说 |
+| 🔄 **OTA 升级** | 远程推送固件，不用拆外壳 |
+| 📊 **Web 管理面板** | 日志监控、手动推送语录、系统控制 |
+| 💾 **对话记录** | 每条对话自动存到 TF 卡 |
+| 🐚 **3D 打印外壳** | 自锁按钮、USB-C 充电、完整外观设计 |
 
-## 快速开始
+## 📐 架构
 
-### 1. 后端部署
+```
+┌─────────────────────────┐         ┌──────────────────────────────┐
+│    ESP32-S3 硬件本体      │         │        FastAPI 后端            │
+│                          │         │                              │
+│  ┌───────────────────┐   │ HTTP/WS │  ┌────────────────────┐     │
+│  │ INMP441 麦克风     │──┼─────────┼──┤ ASR 语音识别       │     │
+│  │ MAX98357 扬声器    │──┼─────────┼──┤ → DeepSeek LLM     │     │
+│  │ 0.96" OLED        │   │         │  │ → CosyVoice TTS   │     │
+│  │ SHT3X 温湿度      │   │         │  └────────────────────┘     │
+│  │ TF 卡存储          │   │         │                              │
+│  └───────────────────┘   │         │  阿里云 · DeepSeek · DashScope│
+│  ┌───────────────────┐   │         └──────────────────────────────┘
+│  │ WiFi + OTA 升级    │   │
+│  │ Web 管理面板(HTML) │   │
+│  └───────────────────┘   │
+└─────────────────────────┘
+```
+
+## 🧰 硬件清单
+
+| 组件 | 型号 | 用途 |
+|------|------|------|
+| **主控** | ESP32-S3 (16MB Flash + 8MB PSRAM) | 大脑，跑 WiFi + 音频处理 |
+| **麦克风** | INMP441 (I2S MEMS) | 拾音 |
+| **功放** | MAX98357A (I2S 3W) | 驱动扬声器 |
+| **扬声器** | 3W 4Ω | 发声 |
+| **显示屏** | 0.96" OLED (SSD1306, I2C) | 状态反馈 |
+| **温湿度** | SHT3X (I2C) | 环境感知 |
+| **存储** | TF 卡 (SPI 模式) | 对话记录、音频缓存 |
+| **电源** | 3.7V 锂电池 + USB-C 充电 | 便携供电 |
+
+## 📁 项目结构
+
+```
+WITH-U/
+├── esp32_voice_assistant/        # ESP32-S3 固件 (Arduino/PlatformIO)
+│   ├── esp32_voice_assistant.ino  # 主程序
+│   ├── config.h                   # 硬件配置
+│   ├── oled_display.h             # OLED 驱动
+│   ├── sd_card.h                  # TF 卡读写
+│   ├── sensors.h                  # 温湿度传感器
+│   ├── ota_update.h               # OTA 远程升级
+│   ├── server/                    # 板载 Web 服务 + 管理面板
+│   ├── gerber_output/             # PCB Gerber 文件
+│   └── tools/                     # 音频处理工具
+├── my-ai-backend/                # AI 后端服务 (FastAPI)
+│   ├── main.py                    # API 入口
+│   ├── stt.py                     # 阿里云语音识别
+│   ├── llm.py                     # DeepSeek 对话
+│   ├── tts.py                     # CosyVoice 语音合成
+│   └── config.example.py          # 密钥配置模板
+├── 386f0e17-a757-40c0-8236-fc20f3f3096d.png  # 项目封面
+├── README.md
+└── LICENSE
+```
+
+## 🚀 快速开始
+
+### 前置条件
+
+- Python 3.10+
+- PlatformIO (VS Code 插件或 CLI)
+- ESP32-S3 开发板 + INMP441 + MAX98357A
+- 阿里云 / DeepSeek / DashScope API 密钥
+
+### 1️⃣ 后端部署
 
 ```bash
 cd my-ai-backend
 pip install -r requirements.txt
 
-# 配置密钥（参考 config.example.py）
+# 配置密钥
 cp config.example.py .env
-# 编辑 .env 填入你的阿里云 / DeepSeek / DashScope 密钥
+# 编辑 .env，填入你的阿里云、DeepSeek、DashScope 密钥
 
 python main.py
 ```
 
-### 2. 固件烧录
+后端默认运行在 `http://localhost:8000`。
 
-用 PlatformIO 打开 `esp32_voice_assistant/`：
+### 2️⃣ 固件烧录
+
+用 VS Code 打开 `esp32_voice_assistant/`，PlatformIO 会自动识别：
 
 ```bash
 cd esp32_voice_assistant
 pio run -t upload
 ```
 
-## 功能
+或者直接串口烧录编译好的固件。
 
-- ✅ 语音唤醒 & 对话（按住按钮说话，松开后自动回复）
-- ✅ 超拟声 TTS（CosyVoice，听起来不像机器人）
-- ✅ OLED 显示对话状态
-- ✅ OTA 远程固件升级
-- ✅ Web 管理面板（实时日志、手动推送语录、系统控制）
-- ✅ 对话历史（每条记录都保存到 TF 卡）
-- ✅ 3D 打印外壳（自锁按钮、USB-C 充电口）
+### 3️⃣ 硬件接线
 
-## 项目起源
+参考 `config.h` 中的引脚定义：
 
-这个项目的名字叫 **WITH-U**——因为它最初的想法很简单：
+| 外设 | 引脚 |
+|------|------|
+| INMP441 麦克风 | BCLK=5, WS=4, DIN=6 |
+| MAX98357A 扬声器 | BCLK=15, WS=16, DOUT=7 |
+| 按钮 | IO0 (GND 触发) |
+| OLED (I2C) | SDA=41, SCL=42 |
+| SHT3X (I2C) | 0x44 |
+| TF 卡 (SPI) | CS=10, MOSI=11, SCK=12, MISO=13 |
+
+### 4️⃣ 连接玩偶
+
+按住按钮说话，松开后自动发送到后端 → AI 回复 → 扬声器播放。
+
+## 💡 项目起源
 
 > 异地也好，加班也好，总有没办法陪在她身边的时候。
-> 所以做了一个小小的她，让代码替我说"我在"。
+> 所以做了一个小小的她，让代码替我说 **"我在"**。
 
-## License
+项目名 **WITH-U** —— 陪伴，就是全部的意义。
 
-[MIT](LICENSE)
+## 📄 License
+
+[MIT](LICENSE) — 随意使用，保留出处即可。
+
+---
+
+<p align="center">
+  <a href="https://github.com/huayu0824/WITH-U/issues">反馈问题</a> ·
+  <a href="https://github.com/huayu0824/WITH-U/discussions">讨论交流</a>
+</p>

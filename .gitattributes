@@ -1,0 +1,37 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Source code
+*.py text diff=python
+*.ino text
+*.h text
+*.c text
+*.cpp text
+*.html text
+*.css text
+*.js text
+*.json text
+*.md text
+*.yml text
+*.yaml text
+*.toml text
+*.ini text
+*.cfg text
+*.csv text
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.bin binary
+*.elf binary
+*.hex binary
+*.mp3 binary
+*.wav binary
+*.pdf binary
