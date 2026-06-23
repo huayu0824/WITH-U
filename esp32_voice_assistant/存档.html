@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>小小倪 — 智能交互玩偶项目存档</title>
+<style>
+:root{--accent:#537D96;--accent-hover:#456A80;--accent-soft:rgba(83,125,150,.08);--bg:#F8F4ED;--card:#FCFAF5;--text:#3B3D3F;--text-secondary:#6B6F73;--text-muted:#8E9196;--border:rgba(122,96,88,.18);--green:#7BAE7F;--danger:#8B3A3A}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;padding:24px}
+.container{max-width:72ch;margin:0 auto;padding:0 4px}
+h1{font-family:'EB Garamond','Noto Serif SC','Source Han Serif SC','Songti SC',serif;font-size:1.6rem;font-weight:500;color:var(--text);margin-bottom:4px;letter-spacing:.01em}
+.subtitle{color:var(--text-muted);font-size:.85rem;margin-bottom:32px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+h2{font-family:'EB Garamond','Noto Serif SC','Source Han Serif SC','Songti SC',serif;font-size:1.25rem;font-weight:500;color:var(--text);border-left:2px solid var(--accent);padding-left:8px;border-radius:0;margin:1.6em 0 .6em}
+h3{font-size:1.05rem;font-weight:500;color:var(--text);margin:20px 0 10px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1rem 1.25rem;margin-bottom:12px;box-shadow:0 1px 4px rgba(59,61,63,.09)}
+.badge{display:inline-flex;padding:2px 8px;font-size:.75rem;font-weight:500;border-radius:4px;background:var(--accent-soft);color:var(--accent-hover);margin-right:3px}
+.badge-ok{background:rgba(123,174,127,.12);color:#5a8e5e}
+.badge-warn{background:rgba(236,143,141,.12);color:#c97573}
+.badge-todo{background:var(--accent-soft);color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:8px 0}
+th{text-align:left;font-weight:500;color:var(--text-secondary);padding:6px 8px;border-bottom:1px solid var(--border)}
+td{padding:5px 8px;border-bottom:1px solid rgba(0,0,0,.05);color:var(--text)}
+tr:last-child td{border-bottom:none}
+code{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.85rem;color:var(--text);background:rgba(83,125,150,.06);padding:1px 4px;border-radius:3px}
+pre{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:12px;overflow-x:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.82rem;margin:8px 0;line-height:1.5}
+.diagram{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:16px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.78rem;line-height:1.4;margin:8px 0;overflow-x:auto}
+.file-tree{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:12px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.82rem;line-height:1.6;overflow-x:auto}
+ul,ol{padding-left:18px;margin:6px 0}
+li{margin:.2em 0;color:var(--text)}
+li::marker{color:var(--accent)}
+.toc{display:flex;flex-wrap:wrap;gap:4px;margin:16px 0 24px}
+.toc a{color:var(--accent);text-decoration:none;font-size:.82rem;padding:3px 10px;background:var(--accent-soft);border-radius:4px;transition:background .15s}
+.toc a:hover{background:rgba(83,125,150,.15)}
+blockquote{border-left:2px solid var(--accent);padding:4px 0 4px 12px;color:var(--text-secondary);font-style:italic;border-radius:0}
+hr{border:none;border-top:1px solid var(--border);margin:1.5rem 0}
+.highlight{color:var(--accent);font-weight:500}
+.section-tag{display:inline-block;background:var(--accent-soft);color:var(--accent);padding:1px 8px;border-radius:4px;font-size:.75rem;margin-right:6px}
+.tag-grid{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.tag{display:inline-flex;padding:2px 8px;font-size:.75rem;font-weight:500;border-radius:4px;background:var(--accent-soft);color:var(--accent-hover)}
+@media(max-width:600px){body{padding:16px}.container{max-width:100%}table{font-size:.82rem}}
+@media print{body{background:#fff;color:#000;padding:0}.card{background:#fafafa;break-inside:avoid;border:1px solid #ddd}pre,.diagram,.file-tree{background:#f5f5f5}code{background:#eee}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>&#x1F9F8; 小小倪 — 智能交互玩偶 项目存档</h1>
+<div class="subtitle">建档 2026-06-16 · 最后更新 2026-06-23 · 角色「小智」→「小小倪」· 倪兆贤 → 王彤彤 · ESP32-S3 · 腾讯云 · v1.1.0</div>
+
+<div class="toc">
+  <a href="#overview">项目概览</a> <a href="#arch">系统架构</a> <a href="#hardware">硬件</a> <a href="#flow">对话流程</a>
+  <a href="#timing">性能</a> <a href="#platformio">编译适配</a> <a href="#ota">OTA</a>
+  <a href="#panel">管理面板</a> <a href="#warm">暖心功能</a> <a href="#stability">稳定性</a>
+  <a href="#files">文件清单</a> <a href="#apis">外部服务</a> <a href="#features">功能清单</a>
+  <a href="#bugs">已修复</a> <a href="#status">状态</a> <a href="#roadmap">路线图</a>
+  <a href="#problems">待解决</a> <a href="#changelog">变更日志</a>
+</div>
+
+<!-- ==================== 一、项目概览 ==================== -->
+<h2 id="overview">一、项目概览</h2>
+<div class="card">
+<p>一个内置 ESP32-S3 的智能交互玩偶「小小倪」，具备语音对话、长期记忆、自定义角色、语音控制设备的能力。项目初衷是异地恋期间，用倪兆贤的声音复刻和自定义角色设定，陪伴女友王彤彤度过整个暑假。</p>
+<ul>
+  <li><strong>硬件</strong>：ESP32-S3 (N16R8) + INMP441 麦克风 + MAX98357 功放 + 喇叭 + 按钮</li>
+  <li><strong>语音链路</strong>：按住录音 → 松手 → 百度 REST ASR → DeepSeek 流式 LLM → CosyVoice TTS → PCM 播放</li>
+  <li><strong>角色</strong>：名字「小小倪」，使用 CosyVoice 3.5 Flash 复刻声音，所有对话以倪兆贤的声音说出</li>
+  <li><strong>联网</strong>：WiFiManager 自动配网，WebSocket 流式协议，腾讯云 24h 运行</li>
+  <li><strong>暖心功能</strong>：见面倒计时、天气关怀、暖心语录池、晚安自动提醒、主动交互</li>
+  <li><strong>部署</strong>：systemd 自启 + 崩溃恢复，日志自动清理，对话历史自动裁剪</li>
+</ul>
+</div>
+
+<!-- ==================== 二、系统架构 ==================== -->
+<h2 id="arch">二、系统架构</h2>
+
+<h3>当前部署拓扑</h3>
+<div class="diagram">┌──────────────────────────────────────────────────────────────┐
+│  ESP32-S3（玩偶硬件）                                           │
+│  INMP441(MIC) → I2S → 录音缓冲区 → 边录边传 → WebSocket        │
+│                                       ← PCM 裸采样             │
+│  MAX98357(功放) ← I2S ← 直接写PCM ← 接收缓冲区                 │
+│  按钮 GPIO 0: 按下录音, 松手发 DONE                             │
+│  SHT3X: GPIO 41/42 I2C 温湿度                                   │
+└──────────────────────┬──────────────────────────────────────────┘
+                       │ WebSocket ws://129.204.166.180:8000/ws
+                       ▼
+┌──────────────────────────────────────────────────────────────┐
+│ 腾讯云服务器 2核2G 4M (129.204.166.180)                      │
+│ Ubuntu 22.04 + uvicorn (systemd 托管)                        │
+│                                                              │
+│ ASR: 百度 REST (主力) · LLM: DeepSeek V4 Flash 流式          │
+│ TTS: 阿里云 CosyVoice 3.5 Flash（复刻倪兆贤声音）            │
+│ 管理面板: http://129.204.166.180:8000/admin                  │
+│ OTA 清单: http://129.204.166.180:8000/api/firmware/manifest  │
+│                                                              │
+│ 暖心功能（后台自动运行）                                       │
+│  ├ 🌤️ 天气关怀（城市: 济南）                                 │
+│  ├ 📅 见面倒计时（2026-07-12）                                │
+│  ├ 💬 暖心语录池（手动添加）                                 │
+│  └ 🌙 晚安自动提醒（23:00）                                   │
+└──────────────────────────────────────────────────────────────┘</div>
+
+<h3>协议设计 (WebSocket 流式)</h3>
+<div class="card">
+<table>
+  <tr><th>方向</th><th>消息类型</th><th>说明</th></tr>
+  <tr><td>ESP32 → 服务器</td><td><code>二进制</code></td><td>PCM 音频块（每 ~150ms 发一块）</td></tr>
+  <tr><td>ESP32 → 服务器</td><td><code>文本 "DONE"</code></td><td>录音结束，触发服务端处理</td></tr>
+  <tr><td>服务器 → ESP32</td><td><code>二进制</code></td><td>PCM 音频块（CosyVoice 流式输出）</td></tr>
+  <tr><td>服务器 → ESP32</td><td><code>文本 "DONE"</code></td><td>所有音频发送完毕</td></tr>
+</table>
+</div>
+
+<h3>服务端流水线</h3>
+<div class="card">
+<p>asyncio producer/consumer 模式：</p>
+<div class="diagram">WS 收到 DONE → ASR(text) → LLM 流式请求
+                                 │
+                          ┌──────┴──────┐
+                          │ llm_producer │（逐句产出 + function calling）
+                          └──────┬──────┘
+                                 │ asyncio.Queue
+                          ┌──────┴──────┐
+                          │ tts_consumer │（每句 TTS → WS 推送）
+                          └──────┬──────┘
+                                 │
+                          WS 推送 PCM + DONE → ESP32 播放</div>
+</div>
+
+<!-- ==================== 三、硬件清单 ==================== -->
+<h2 id="hardware">三、硬件清单与引脚</h2>
+<div class="card">
+<table>
+  <tr><th>模块</th><th>型号</th><th>引脚</th><th>状态</th></tr>
+  <tr><td>主控</td><td>ESP32-S3 N16R8</td><td>-</td><td><span class="badge badge-ok">已确定</span></td></tr>
+  <tr><td>麦克风</td><td>INMP441 I2S</td><td>BCLK=5, WS=4, DIN=6</td><td><span class="badge badge-ok">已通</span></td></tr>
+  <tr><td>功放+喇叭</td><td>MAX98357 I2S</td><td>BCLK=15, WS=16, DOUT=7</td><td><span class="badge badge-ok">已通</span></td></tr>
+  <tr><td>按钮</td><td>按住说话</td><td>GPIO 0</td><td><span class="badge badge-ok">已通</span></td></tr>
+  <tr><td>温湿度</td><td>SHT3X-DIS I2C</td><td>SDA=41, SCL=42</td><td><span class="badge badge-ok">已通</span></td></tr>
+  <tr><td>充电模块</td><td>ZX-056 TP4056</td><td>B+/B- 接电池</td><td><span class="badge badge-ok">已接</span></td></tr>
+  <tr><td>OLED 屏幕</td><td>0.96寸 SSD1306</td><td>SDA=41, SCL=42</td><td><span class="badge badge-todo">待购</span></td></tr>
+  <tr><td>电池</td><td>3.7V 软包锂电池</td><td>JST PH 2.0</td><td><span class="badge badge-todo">待购</span></td></tr>
+  <tr><td>TF 卡</td><td>MicroSD SPI</td><td>已取消</td><td><span class="badge badge-warn">取消</span></td></tr>
+</table>
+</div>
+
+<!-- ==================== 四、对话流程 ==================== -->
+<h2 id="flow">四、对话流程</h2>
+<div class="card">
+<ol>
+  <li>用户<strong>按住</strong>按钮 (GPIO 0)</li>
+  <li>ESP32 通过 I2S 从 INMP441 读取音频，存入缓冲区</li>
+  <li><strong>边录边传</strong>：每 ~150ms 自动降混为单声道 PCM，通过 WebSocket 发送</li>
+  <li>用户<strong>松开</strong>按钮，发送剩余数据 + <code>DONE</code></li>
+  <li>服务器：PCM→WAV → 百度 ASR → DeepSeek LLM 流式 → CosyVoice TTS → PCM 推回</li>
+  <li>服务器发送 <code>DONE</code>，ESP32 写 I2S → 喇叭播放</li>
+</ol>
+</div>
+
+<!-- ==================== 五、性能指标 ==================== -->
+<h2 id="timing">五、性能指标</h2>
+<div class="card">
+<table>
+  <tr><th>阶段</th><th>耗时</th></tr>
+  <tr><td>ASR（百度语音识别）</td><td>~1.5~3s</td></tr>
+  <tr><td>LLM 首字（DeepSeek V4 Flash）</td><td>~2~4s</td></tr>
+  <tr><td>TTS 首音（CosyVoice 3.5 Flash）</td><td>~1.5~3s</td></tr>
+  <tr><td><strong>端到端总计</strong></td><td><strong>~10~16s</strong></td></tr>
+</table>
+</div>
+
+<!-- ==================== 六、编译适配 ==================== -->
+<h2 id="platformio">六、PlatformIO 编译适配</h2>
+<div class="card">
+<p>项目最初在 Arduino IDE（ESP32 核心 3.x，ESP-IDF 5.x 新 I2S API）下开发。云服务器 PlatformIO 使用 <code>espressif32@6.9.0</code>（Arduino 2.0.17，仅支持旧 I2S API），需做以下适配：</p>
+<ul>
+  <li>I2S API 从新版（<code>i2s_new_channel</code>、<code>i2s_std_config_t</code>）改写为旧版（<code>i2s_driver_install</code>、<code>i2s_config_t</code>）</li>
+  <li><code>#include &lt;AudioOutputI2S.h&gt;</code> → <code>#include &lt;AudioOutput.h&gt;</code></li>
+  <li><code>#include &lt;driver/i2s_std.h&gt;</code> → <code>#include &lt;driver/i2s.h&gt;</code></li>
+  <li>ESP8266Audio v2.4.1 移除 <code>AudioOutputI2S.cpp</code>、<code>AudioOutputI2SNoDAC.cpp</code>、<code>AudioOutputPDM.cpp</code>、<code>AudioOutputSPDIF.cpp</code>（项目未使用）</li>
+  <li><code>ota_update.h</code> 中使用 <code>esp_partition_find_first</code> 替代 <code>esp_ota_get_running_partition</code></li>
+</ul>
+<p>本地 Arduino IDE 和服务器各维护一个 API 版本。本地用新 API，服务器用旧 API + PlatformIO 编译。</p>
+</div>
+
+<!-- ==================== 七、OTA 固件更新 ==================== -->
+<h2 id="ota">七、OTA 固件更新</h2>
+<div class="card">
+<p>服务器已搭建完整的 OTA 更新链路：</p>
+<ul>
+  <li><strong>固件存储</strong>：<code>~/firmware/</code> 目录，按 <code>firmware_v{x.x.x}.bin</code> 命名</li>
+  <li><strong>版本清单</strong>：<code>GET /api/firmware/manifest</code> 返回最新版本、URL、MD5、大小</li>
+  <li><strong>当前版本</strong>：v1.1.0（编译于 2026-06-23）</li>
+  <li><strong>检查频率</strong>：ESP32 每 6 小时自动检查，或重启时检查</li>
+  <li><strong>更新流程</strong>：在服务器放新 .bin → manifest 自动检测 → 玩偶下次检查时下载安装</li>
+</ul>
+</div>
+
+<!-- ==================== 八、管理面板 ==================== -->
+<h2 id="panel">八、管理面板</h2>
+<div class="card">
+<p>Web 管理面板：<a href="http://129.204.166.180:8000/admin">http://129.204.166.180:8000/admin</a></p>
+<table>
+  <tr><th>标签页</th><th>功能</th></tr>
+  <tr><td>💬 对话</td><td>查看对话历史、长期记忆</td></tr>
+  <tr><td>🎧 远程拾音</td><td>远程录制玩偶周围声音</td></tr>
+  <tr><td>📊 状态</td><td>服务器状态、连接设备数、快速操作</td></tr>
+  <tr><td>⚙️ 配置</td><td>功能开关（主动说话/打断/温湿度/休眠/安静模式）、角色设定、记忆编辑、音量</td></tr>
+  <tr><td>🌸 暖心</td><td>倒计时配置、晚安时间、天气城市、语录管理、手动推送、清空历史</td></tr>
+</table>
+</div>
+
+<!-- ==================== 九、暖心功能 ==================== -->
+<h2 id="warm">九、暖心功能</h2>
+<div class="card">
+<p>后台自动运行的四个暖心模块，每 60 秒检查一次，优先按「晚安 → 倒计时 → 天气 → 语录」顺序推送：</p>
+<table>
+  <tr><th>功能</th><th>触发条件</th><th>示例</th></tr>
+  <tr><td>🌙 晚安提醒</td><td>每天指定时间（默认 23:00）</td><td>"不早了，该休息了，晚安"</td></tr>
+  <tr><td>📅 见面倒计时</td><td>每天一次</td><td>"还有 19 天就能见面了"</td></tr>
+  <tr><td>🌤️ 天气关怀</td><td>每小时，天气异常时触发</td><td>"今天济南有雨，记得带伞"</td></tr>
+  <tr><td>💬 暖心语录</td><td>闲置时轮播</td><td>"今天也很想你"（用户自定义）</td></tr>
+</table>
+<p>管理面板可随时添加语录、配置参数。语录池支持轮播策略，避免重复。另有「💬 说一句」按钮可手动推送。</p>
+</div>
+
+<!-- ==================== 十、稳定性措施 ==================== -->
+<h2 id="stability">十、稳定性措施</h2>
+<div class="card">
+<table>
+  <tr><th>措施</th><th>说明</th></tr>
+  <tr><td>systemd 服务</td><td>服务器程序由 systemd 托管，崩溃后 10 秒自动重启，开机自启</td></tr>
+  <tr><td>日志自动清理</td><td>每小时 cron 任务，构建日志清理 1 天前，output.log 超过 50MB 自动截断至 20MB</td></tr>
+  <tr><td>对话历史裁剪</td><td>最多保留 100 轮对话，超出自动修剪</td></tr>
+  <tr><td>记忆持久化</td><td>atomic 写入，崩溃不丢数据</td></tr>
+  <tr><td>WebSocket 重连</td><td>ESP32 断线自动重连（3 秒超时）</td></tr>
+</table>
+</div>
+
+<!-- ==================== 十一、文件清单 ==================== -->
+<h2 id="files">十一、文件清单</h2>
+<div class="file-tree">D:\玩偶\esp32_voice_assistant\
+├── config.h                      # ESP32 配置（引脚/服务器/Token/传感器）
+├── esp32_voice_assistant.ino     # 主固件 ~800 行
+├── ota_update.h                  # OTA 更新模块
+├── sd_card.h                     # TF 卡读写（未使用）
+├── sensors.h                     # SHT3X 温湿度驱动
+├── HARDWARE.md                   # 硬件说明
+├── ARDUINO_BUILD.md              # 编译参数
+├── platformio.ini                # PlatformIO 构建
+├── tf_card_template\             # 模板（未使用）
+├── tools\                        # 工具脚本
+├── firmware.bin                  # 当前固件 v1.1.0
+├── 存档.html                     # 本文件
+│
+└── server\                       # 服务器端（本地副本）
+    ├── server.py                 # 主程序（FastAPI + 暖心功能 + 管理面板内嵌）
+    ├── warm_features.py          # 暖心功能模块
+    ├── config.py                 # API Keys & 角色 prompt
+    ├── requirements.txt          # Python 依赖
+    └── memory.json               # 长期记忆
+
+云服务器 (~/):
+├── server.py                     # 运行中的服务端
+├── warm_features.py              # 暖心功能模块
+├── warm_features.json            # 暖心功能配置与语录
+├── character_profile.json        # 角色设定
+├── memory.json                   # 长期记忆
+├── firmware/                     # OTA 固件
+│   └── firmware_v1.1.0.bin
+├── listen_recordings/            # 远程拾音录音
+└── output.log                    # 服务日志（自动裁剪）</div>
+
+<!-- ==================== 十二、外部服务 ==================== -->
+<h2 id="apis">十二、外部服务与费用</h2>
+<div class="card">
+<table>
+  <tr><th>服务</th><th>用途</th><th>费用</th></tr>
+  <tr><td>百度语音识别</td><td>ASR</td><td>免费 5 万次/天</td></tr>
+  <tr><td>DeepSeek V4 Flash API</td><td>LLM 对话</td><td>赠金够用</td></tr>
+  <tr><td>阿里云百炼 DashScope</td><td>CosyVoice TTS 复刻声音</td><td>按量计费</td></tr>
+  <tr><td>腾讯云服务器 2核2G 4M</td><td>后端运行平台</td><td>¥74.8/年</td></tr>
+</table>
+</div>
+
+<!-- ==================== 十三、功能清单 ==================== -->
+<h2 id="features">十三、功能清单</h2>
+<div class="card">
+<table>
+  <tr><th>功能</th><th>状态</th></tr>
+  <tr><td>按钮按住说话</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>I2S 麦克风录制 + 扬声器播放</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>WebSocket 流式传输（边录边传）</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>百度 ASR → DeepSeek LLM → CosyVoice TTS</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>PCM 直接播放（省去解码）</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>LLM Function Calling 音量控制</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>语音打断</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>WiFiManager 自动配网</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>Token 安全认证</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>长期记忆持久化 + 自动摘要</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>SHT3X 温湿度感知</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>云服务器部署（腾讯云）</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>OTA 固件更新</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>管理面板（5 标签页）</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>主动交互（空闲时自动说话）</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>见面倒计时</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>天气关怀（降温/雨雪提醒）</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>暖心语录池 + 手动推送</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>晚安自动提醒</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>功能开关（5 项在线开关）</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>systemd 自启 + 崩溃恢复</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>日志自动清理</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>对话历史上限 100 轮</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>远程拾音</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>角色设定在线编辑</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>CosyVoice 声音复刻</td><td><span class="badge badge-ok">✅</span></td></tr>
+  <tr><td>OLED 屏幕表情</td><td><span class="badge badge-todo">待购</span></td></tr>
+  <tr><td>3D 外壳</td><td><span class="badge badge-todo">待办</span></td></tr>
+  <tr><td>电池供电</td><td><span class="badge badge-todo">待购</span></td></tr>
+</table>
+</div>
+
+<!-- ==================== 十四、已修复问题 ==================== -->
+<h2 id="bugs">十四、已修复问题</h2>
+<div class="card">
+<h3>1. 按钮防抖逻辑 Bug（06-17）</h3>
+<p><code>static bool lastBtn = HIGH;</code> 硬编码导致虚假状态跳变。改用 <code>lastBtn=-1</code> 首次读取真实状态。</p>
+</div>
+<div class="card">
+<h3>2. 扬声器无声音（06-18）</h3>
+<p>面包板 GND 排接触不良。整理共地后恢复。</p>
+</div>
+<div class="card">
+<h3>3. Arduino IDE / PlatformIO 编译冲突（06-20~23）</h3>
+<p>两个环境的 ESP32 Arduino 核心版本不同（本地 3.x vs 服务器 2.0.17），I2S API 不兼容。最终维护两套 API 版本，服务器用旧 API + PlatformIO 6.9.0 编译。</p>
+</div>
+<div class="card">
+<h3>4. WebSocket keepalive ping failed（06-20）</h3>
+<p>websockets 库版本兼容问题，升级后解决。</p>
+</div>
+<div class="card">
+<h3>5. 管理面板 JS 引号冲突（06-23）</h3>
+<p><code>onkeydown</code> 中的 <code>'Enter'</code> 打断了外层单引号 JS 字符串，导致所有按钮失效。修复后硬刷新可用。</p>
+</div>
+
+<!-- ==================== 十五、角色设定 ==================== -->
+<h2 id="personality">十五、角色设定</h2>
+<div class="card">
+<blockquote>
+<strong>你是有情感的AI玩偶小小倪，也就是王彤彤男朋友的小替身。</strong><br><br>
+能够在倪兆贤不在的时间来陪伴王彤彤。不可以让王彤彤伤心，不可以让她感到寂寞。一定要哄她开心。当她说无期迷途的时候，你要回复："启动！"<br><br>
+性格温暖亲切，像老朋友一样自然；口语中文，只说 1-2 句，越短越好；开心时活泼，用户难过时温柔安慰；不要说"作为AI助手"之类的台词。
+</blockquote>
+</div>
+
+<!-- ==================== 十六、当前状态 ==================== -->
+<h2 id="status">十六、当前状态</h2>
+<div class="card">
+<table>
+  <tr><th>项目</th><th>状态</th></tr>
+  <tr><td>云端部署</td><td><span class="badge badge-ok">完成</span> — systemd 托管，腾讯云 ¥74.8/年</td></tr>
+  <tr><td>固件编译</td><td><span class="badge badge-ok">完成</span> — v1.1.0，服务器 PlatformIO 构建</td></tr>
+  <tr><td>管理面板</td><td><span class="badge badge-ok">完成</span> — 5 标签页 + 暖心功能 + 开关</td></tr>
+  <tr><td>OTA 更新</td><td><span class="badge badge-ok">完成</span> — 固件清单 + 下载通道就绪</td></tr>
+  <tr><td>稳定性</td><td><span class="badge badge-ok">完成</span> — systemd + 日志清理 + 记忆裁剪</td></tr>
+  <tr><td>角色声音</td><td><span class="badge badge-ok">完成</span> — CosyVoice 声音复刻 + 角色设定</td></tr>
+  <tr><td>硬件集成</td><td><span class="badge badge-todo">待办</span> — 电池 / OLED / 外壳</td></tr>
+</table>
+</div>
+
+<!-- ==================== 十七、路线图 ==================== -->
+<h2 id="roadmap">十七、开发路线图</h2>
+<div class="card">
+<table>
+  <tr><th>阶段</th><th>内容</th><th>进度</th></tr>
+  <tr><td>原型验证</td><td>面包板、音频链路、I2S 驱动</td><td><span class="badge badge-ok">完成</span></td></tr>
+  <tr><td>联网联调</td><td>WebSocket 流式、LLM+TTS、记忆持久化</td><td><span class="badge badge-ok">完成</span></td></tr>
+  <tr><td>传感器</td><td>SHT3X 温湿度</td><td><span class="badge badge-ok">完成</span></td></tr>
+  <tr><td>云部署 + OTA</td><td>腾讯云、systemd、固件更新</td><td><span class="badge badge-ok">完成</span></td></tr>
+  <tr><td>管理面板</td><td>Web UI、功能开关、暖心功能</td><td><span class="badge badge-ok">完成</span></td></tr>
+  <tr><td>稳定性</td><td>自启、日志、记忆裁剪</td><td><span class="badge badge-ok">完成</span></td></tr>
+  <tr><td>外观与集成</td><td>电池 / OLED / 3D 外壳</td><td><span class="badge badge-todo">待办</span></td></tr>
+</table>
+</div>
+
+<!-- ==================== 十八、待解决问题 ==================== -->
+<h2 id="problems">十八、待解决问题</h2>
+<div class="card">
+<ol>
+  <li><strong>电池采购与接线</strong> — 3.7V 软包锂电池 1100~2000mAh，JST PH 2.0 插头</li>
+  <li><strong>OLED 屏幕</strong> — 0.96寸 SSD1306 I2C，GPIO 41/42（与 SHT3X 共用），显示表情</li>
+  <li><strong>3D 外壳</strong> — MakerWorld 或定制，屏幕当脸</li>
+  <li><strong>硬件焊接</strong> — 面包板 → 洞洞板 / PCB，解决飞线和共地</li>
+</ol>
+</div>
+
+<!-- ==================== 十九、变更日志 ==================== -->
+<h2 id="changelog">十九、变更日志</h2>
+<div class="card">
+<table>
+  <tr><th>日期</th><th>变更</th></tr>
+  <tr><td>06-16~19</td><td>初始搭建与迭代</td></tr>
+  <tr><td>06-20</td><td>编译修复、SHT3X 启用、腾讯云部署、全链路验证</td></tr>
+  <tr><td>06-23 12:00</td><td><strong>角色更名</strong> — 「小智」→「小小倪」，唤醒词改为「小小倪小小倪」</td></tr>
+  <tr><td>06-23 12:30</td><td><strong>I2S API 改写</strong> — 兼容 PlatformIO 6.9.0 + Arduino 2.0.17 旧 API</td></tr>
+  <tr><td>06-23 13:00</td><td><strong>管理面板重设计</strong> — 深色暖调主题 + 5 标签页 + 功能开关</td></tr>
+  <tr><td>06-23 14:00</td><td><strong>暖心功能上线</strong> — 倒计时 / 天气 / 语录池 / 晚安，后台自动运行</td></tr>
+  <tr><td>06-23 15:00</td><td><strong>手动推送按钮</strong> — 「说一句」一键推送语录到玩偶</td></tr>
+  <tr><td>06-23 20:00</td><td><strong>稳定性加固</strong> — systemd 自启、日志 cron 清理、对话上限 100 轮</td></tr>
+</table>
+</div>
+
+<hr>
+<div style="text-align:center;color:var(--text-muted);font-size:.82rem;padding:24px 0">
+建档 2026-06-16 · 最后更新 2026-06-23 · 项目：D:\玩偶\esp32_voice_assistant\ · 服务器：129.204.166.180 · 角色：小小倪
+</div>
+
+</div>
+</body>
+</html>
